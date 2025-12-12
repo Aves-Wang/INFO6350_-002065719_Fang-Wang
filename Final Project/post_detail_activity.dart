@@ -13,7 +13,9 @@ class PostDetailActivity extends StatelessWidget {
         builder: (context) => Scaffold(
           appBar: AppBar(),
           body: Center(
-            child: Image.file(File(imagePath)),
+            child: imagePath.startsWith('http')
+                ? Image.network(imagePath)
+                : Image.file(File(imagePath)),
           ),
         ),
       ),
@@ -61,16 +63,24 @@ class PostDetailActivity extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: post.imagePaths.length,
                   itemBuilder: (context, index) {
+                    final path = post.imagePaths[index];
                     return GestureDetector(
-                      onTap: () => _showFullScreenImage(context, post.imagePaths[index]),
+                      onTap: () => _showFullScreenImage(context, path),
                       child: Padding(
                         padding: const EdgeInsets.only(right: 8.0),
-                        child: Image.file(
-                          File(post.imagePaths[index]),
-                          width: 120,
-                          height: 120,
-                          fit: BoxFit.cover,
-                        ),
+                        child: path.startsWith('http')
+                            ? Image.network(
+                                path,
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.file(
+                                File(path),
+                                width: 120,
+                                height: 120,
+                                fit: BoxFit.cover,
+                              ),
                       ),
                     );
                   },
@@ -83,4 +93,5 @@ class PostDetailActivity extends StatelessWidget {
     );
   }
 }
+
 
